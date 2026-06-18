@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employability Skills Quiz | રોજગાર કુશળતા ક્વિઝ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --card: #1e2235;
+    --border: #2a2f45;
+    --accent: #4f8ef7;
+    --accent2: #6c63ff;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e8eaf0;
+    --muted: #8b92a5;
+    --radius: 14px;
+  }
+
+  body {
+    font-family: 'Inter', 'Noto Sans Gujarati', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .wrapper { width: 100%; max-width: 760px; }
+
+  /* ── COVER ── */
+  #cover {
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  #cover h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 700;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #e8eaf0, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  #cover h1.gu { font-size: clamp(20px, 4.2vw, 30px); -webkit-text-fill-color: initial; background: none; color: var(--text); font-family: 'Noto Sans Gujarati', sans-serif; }
+  #cover p { color: var(--muted); font-size: 14px; margin-bottom: 30px; line-height: 1.6; }
+
+  .lang-select {
+    margin-bottom: 32px;
+  }
+  .lang-select .lbl-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+  .lang-options { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .lang-btn {
+    padding: 14px 22px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lang-btn:hover { border-color: var(--accent); }
+  .lang-btn.active { border-color: var(--accent); background: rgba(79,142,247,0.12); color: var(--accent); }
+  .lang-btn .flag { font-size: 18px; }
+
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 36px;
+  }
+  .meta-item { text-align: center; }
+  .meta-item .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .meta-item .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── QUIZ ── */
+  #quiz { display: none; }
+
+  .quiz-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .mini-lang-toggle {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .mini-lang-toggle button {
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mini-lang-toggle button.active { background: var(--accent); color: #fff; }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .q-counter { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .q-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .q-text.gu { font-family: 'Noto Sans Gujarati', sans-serif; }
+  .q-text .secondary {
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 15px;
+    color: var(--muted);
+    font-family: 'Noto Sans Gujarati', sans-serif;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-size: 15px;
+    color: var(--text);
+    text-align: left;
+  }
+  .opt:hover:not(.disabled) {
+    border-color: var(--accent);
+    background: rgba(79,142,247,0.07);
+  }
+  .opt-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: all 0.18s;
+  }
+  .opt:hover:not(.disabled) .opt-letter { background: var(--accent); color: #fff; }
+  .opt-text { flex: 1; }
+  .opt-text .opt-sub {
+    display: block;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-family: 'Noto Sans Gujarati', sans-serif;
+  }
+
+  .opt.selected { border-color: var(--accent); background: rgba(79,142,247,0.12); }
+  .opt.selected .opt-letter { background: var(--accent); color: #fff; }
+
+  .opt.correct { border-color: var(--green); background: rgba(34,197,94,0.1); }
+  .opt.correct .opt-letter { background: var(--green); color: #fff; }
+
+  .opt.wrong { border-color: var(--red); background: rgba(239,68,68,0.1); }
+  .opt.wrong .opt-letter { background: var(--red); color: #fff; }
+
+  .opt.disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .feedback.wrong { background: rgba(239,68,68,0.12); color: #fc7373; border: 1px solid rgba(239,68,68,0.3); }
+
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  /* ── RESULT ── */
+  #result { display: none; }
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 36px;
+    text-align: center;
+  }
+  .result-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin: 0 auto 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .result-circle svg { position: absolute; top: 0; left: 0; }
+  .result-pct {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    position: relative;
+  }
+  .result-label { font-size: 11px; color: var(--muted); position: relative; }
+
+  .result-card h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    margin-bottom: 10px;
+  }
+  .result-card > p { color: var(--muted); margin-bottom: 32px; font-size: 15px; }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 28px;
+    min-width: 120px;
+  }
+  .stat-box .n {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .stat-box .n.green { color: var(--green); }
+  .stat-box .n.red { color: var(--red); }
+  .stat-box .n.yellow { color: var(--yellow); }
+  .stat-box .lbl { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  .review-toggle {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    padding: 10px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 24px;
+    transition: all 0.18s;
+  }
+  .review-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  .review-list { text-align: left; display: none; }
+  .review-list.show { display: block; }
+  .review-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .review-item .ri-q { color: var(--text); margin-bottom: 8px; font-weight: 500; }
+  .review-item .ri-q .ri-q-gu { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; font-family: 'Noto Sans Gujarati', sans-serif; font-weight: 400; }
+  .review-item .ri-a { font-size: 13px; color: var(--muted); }
+  .review-item.ri-correct { border-left: 3px solid var(--green); }
+  .review-item.ri-wrong { border-left: 3px solid var(--red); }
+  .ri-tag { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .ri-tag.c { color: var(--green); }
+  .ri-tag.w { color: var(--red); }
+
+  /* ── BUTTON ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.18s, transform 0.12s;
+  }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.outline {
+    background: none;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+  }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- COVER -->
+  <div id="cover">
+    <div class="badge">ITI Talala · 2022–23</div>
+    <h1>Employability Skills Quiz</h1>
+    <h1 class="gu">રોજગાર કુશળતા ક્વિઝ</h1>
+    <p>Test your knowledge across Communication, Digital Skills, Entrepreneurship & more.<br>સંચાર, ડિજિટલ કૌશલ્ય, ઉદ્યોગસાહસિકતા વગેરેમાં તમારું જ્ઞાન ચકાસો.</p>
+
+    <div class="lang-select">
+      <div class="lbl-title">Choose Display Mode / ભાષા પસંદ કરો</div>
+      <div class="lang-options">
+        <button class="lang-btn active" id="modeBtn-both" onclick="setMode('both')"><span class="flag">🌐</span> English + Gujarati</button>
+        <button class="lang-btn" id="modeBtn-en" onclick="setMode('en')"><span class="flag">🇬🇧</span> English Only</button>
+        <button class="lang-btn" id="modeBtn-gu" onclick="setMode('gu')"><span class="flag">🇮🇳</span> ગુજરાતી Only</button>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="num">50</div><div class="lbl">Questions</div></div>
+      <div class="meta-item"><div class="num">4</div><div class="lbl">Options Each</div></div>
+      <div class="meta-item"><div class="num">8</div><div class="lbl">Topics</div></div>
+    </div>
+    <button class="btn" onclick="startQuiz()">▶ Start Quiz</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz">
+    <div class="quiz-header-row">
+      <div class="q-counter" id="qCounter">1 / 50</div>
+      <div class="mini-lang-toggle">
+        <button id="miniBtn-both" onclick="setMode('both')">EN+GU</button>
+        <button id="miniBtn-en" onclick="setMode('en')">EN</button>
+        <button id="miniBtn-gu" onclick="setMode('gu')">ગુ</button>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="pBar"></div></div>
+    </div>
+    <div class="question-card">
+      <div class="q-num" id="qNum">Question 1</div>
+      <div class="q-text" id="qText"></div>
+    </div>
+    <div class="options" id="opts"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result">
+    <div class="result-card">
+      <div class="result-circle" id="rCircle">
+        <svg width="130" height="130" id="rSvg"></svg>
+        <div class="result-pct" id="rPct"></div>
+        <div class="result-label">Score</div>
+      </div>
+      <h2 id="rTitle"></h2>
+      <p id="rMsg"></p>
+      <div class="stats-row">
+        <div class="stat-box"><div class="n green" id="rCorrect"></div><div class="lbl">Correct</div></div>
+        <div class="stat-box"><div class="n red" id="rWrong"></div><div class="lbl">Wrong</div></div>
+        <div class="stat-box"><div class="n yellow">50</div><div class="lbl">Total</div></div>
+      </div>
+      <button class="review-toggle" onclick="toggleReview(this)">📋 Show Answer Review</button>
+      <div class="review-list" id="reviewList"></div>
+      <br>
+      <button class="btn" onclick="restart()">↺ Restart Quiz</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Each question has English (q/opts) and Gujarati (qGu/optsGu) versions, same meaning & order.
+const ALL_QUESTIONS = [
+  { q:"Which of the options is NOT an Employability Skill?", opts:["Good runner","Good interview skill","Good communication skills","Quick learning"], ans:0,
+    qGu:"કયા વિકલ્પો રોજગાર કુશળતા માટેના નથી?", optsGu:["સારા દોડવીર","સારી ઇન્ટરવ્યૂ કુશળતા","સારી વાતચીત કુશળતા","ઝડપી શીખવું"] },
+  { q:"An employee is someone who __________.", opts:["Goes to school to study","Does not work","Works for a salary","Goes to play"], ans:2,
+    qGu:"કર્મચારી એક એવી વ્યક્તિ છે જે___________.", optsGu:["અભ્યાસ કરવા માટે શાળાએ જાય છે","કામ કરતું નથી","પગાર માટે કામ કરે છે","રમવા જાય છે"] },
+  { q:"Which are the two skills needed for good career growth?", opts:["Singing & Dancing","Dancing & Gardening","Gardening & Singing","Technical Skills & Employability Skills"], ans:3,
+    qGu:"સારી કારકિર્દી વૃદ્ધિ માટે કયા બે કુશળતાની જરૂર છે?", optsGu:["ગાયન અને નૃત્ય","નૃત્ય અને બાગકામ","બાગકામ અને ગાયન","તકનીકી કુશળતા અને રોજગાર કુશળતા"] },
+  { q:"Gopi is always willing to learn and improve in his work. He has __________.", opts:["Love","Certificates","Growth mindset","Markscard"], ans:2,
+    qGu:"ગોપી હંમેશાં તેના કાર્યમાં શીખવા અને સુધારવા માટે તૈયાર હોય છે. તેની પાસે__________ છે.", optsGu:["પ્રેમ","પ્રમાણપત્ર","વૃદ્ધિ માટેની માનસિકતા","માર્કકાર્ડ"] },
+  { q:"When we learn something online, it is called__________.", opts:["Unlearning","Teaching","E-learning","Marketing"], ans:2,
+    qGu:"જ્યારે આપણે કંઈક ઓનલાઈન શીખીશું, ત્યારે તેને_________ કહેવામાં આવે છે.", optsGu:["અન-લર્નિંગ","અધ્યાપન","ઈ-લર્નિંગ","માર્કેટિંગ"] },
+  { q:"Which of these is an employability skills portal?", opts:["Facebook","Bharat Skills","Netflix","Hotstar"], ans:1,
+    qGu:"આમાંથી રોજગારની કુશળતા માટેનું પોર્ટલ કયું છે?", optsGu:["ફેસબુક","ભારત સ્કીલ","નેટફ્લિક્સ","હોટસ્ટાર"] },
+  { q:"Green Jobs are important because __________", opts:["They help protect the environment","They make more pollution","It is easy to do","It is for city employees"], ans:0,
+    qGu:"ગ્રીન જોબ મહત્વપૂર્ણ છે કારણ કે_________", optsGu:["તેઓ પર્યાવરણને સુરક્ષિત કરવામાં મદદ કરે છે","તેઓ વધુ પ્રદૂષણ કરે છે","તે કરવું સરળ છે","તે શહેરના કર્મચારીઓ માટે છે"] },
+  { q:"____________ jobs help to reduce pollution, preserve the environment and the planet.", opts:["Software","Hardware","Green","Carpenter"], ans:2,
+    qGu:"_____________નોકરીઓ પ્રદૂષણ ઘટાડવામાં, પર્યાવરણ અને ગ્રહને જાળવવામાં મદદ કરે છે.", optsGu:["સોફ્ટવેર","હાર્ડવેર","ગ્રીન","સુથાર"] },
+
+  { q:"Values and ethics helps us to build good_______________", opts:["Games","Behavior","Studies","Rent"], ans:1,
+    qGu:"મૂલ્યો અને નૈતિકતા આપણને _________ સારા બનાવવા માટે મદદ કરે છે.", optsGu:["રમતો","વર્તન","અભ્યાસ","ભાડું"] },
+  { q:"A person who respects and follows the law of a country is ______________.", opts:["Businessperson","Bad Employee","Responsible Citizen","Small Kid"], ans:2,
+    qGu:"જે વ્યક્તિ દેશના કાયદાને માન આપે છે અને અનુસરે છે તે_______ છે.", optsGu:["ધંધા","ખરાબ કર્મચારી","જવાબદાર નાગરિક","નાનું બાળક"] },
+  { q:"Rita found someone's purse in the office. She gives it to the office manager. This shows that she has __________.", opts:["Pillar","Honesty","Anger","Friendship"], ans:1,
+    qGu:"રીટાને ઓફિસમાં કોઈનું પર્સ મળ્યું. તે તેને ઓફીસના મેનેજરને આપે છે. આ બતાવે છે કે તેણી પાસે_______ છે.", optsGu:["સ્તંભ","પ્રામાણિકતા","ગુસ્સો","મિત્રતા"] },
+  { q:"The Constitution Of India is also called as __________.", opts:["Bharatiya Academy","Bhartiya Samvidhan","Novel","Newspaper"], ans:1,
+    qGu:"ભારતના બંધારણને____________પણ કહેવામાં આવે છે.", optsGu:["ભારતીય એકેડેમી","ભારતીય સંવિધાન","નવલકથા","અખબાર"] },
+  { q:"India is a Sovereign country. That means it can make its own __________.", opts:["Money","State","Election","Rules and Decisions"], ans:3,
+    qGu:"ભારત એક સાર્વભૌમ દેશ છે. તેનો અર્થ એ કે તે પોતાના___________ બનાવી શકે છે.", optsGu:["ચલણ","રાજ્ય","ચૂંટણી","નિયમો અને નિર્ણયો"] },
+  { q:"Shyam avoids the use of plastic and chemical fertilizers. He is following __________.", opts:["Green lifestyle","Modern lifestyle","Busy lifestyle","None"], ans:0,
+    qGu:"શ્યામ પ્લાસ્ટિક અને રાસાયણિક ખાતરોનો ઉપયોગ ટાળે છે. તે___________ અનુસરે છે.", optsGu:["હરિત જીવનશૈલી","આધુનિક જીવનશૈલી","વ્યસ્ત જીવનશૈલી","કોઈ નહિ"] },
+  { q:"Scientists are warning us that the rise in earth's temperature causes ___________________", opts:["Destroy","Land sliding","Warm","Global warming"], ans:3,
+    qGu:"વિજ્ઞાનીકો આપણને ચેતવણી આપી રહ્યા છે કે પૃથ્વીના તાપમાનમાં વધારો ____ નું કારણ બને છે.", optsGu:["નાશ કરવો","જમીન ધસી પડવી","ગરમી","ગ્લોબલ વોર્મિંગ"] },
+
+  { q:"Regular assessment of skills is necessary for the growth of __________.", opts:["Career","Interview","Job","Skill"], ans:0,
+    qGu:"____________ની વૃદ્ધિ માટે કુશળતાનું નિયમિત આકારણી જરૂરી છે.", optsGu:["કારકિર્દી","ઈન્ટરવ્યું","નોકરી","સ્કીલ્સ (કુશળતા)"] },
+  { q:"Things that one is good at doing are __________.", opts:["Concerns","Interests","Abilities","Passion"], ans:2,
+    qGu:"એવા કામો જેને કારણે સારા કરી શકાય છે તેને________ કહેવાય છે.", optsGu:["સંબંધ","રુચિ","ક્ષમતા","જુસ્સો"] },
+  { q:"Inability to do something well is one's __________.", opts:["Weakness","Aspiration","Strength","Value"], ans:0,
+    qGu:"કંઈક સારી રીતે કામ કરવામાં અસમર્થતા એ __________છે.", optsGu:["નબળાઇ","મહાપ્રાણ","શક્તિ","મૂલ્ય"] },
+  { q:"The way we interact, manage and deal with our external environment is known as______________skills.", opts:["Behavioural","Technical","Musical","Teaching"], ans:0,
+    qGu:"આપણા બાહ્ય વાતાવરણને આપણે જે રીતે સંપર્ક કરીએ છીએ, સંચાલન કરીએ છીએ અને વ્યવહાર કરીએ છીએ તે કુશળતા _______તરીકે ઓળખાય છે.", optsGu:["વર્તણૂક","તકનિકી","સંગીતને લગતું","અધ્યાપન"] },
+  { q:" is one of the behavioral skills that is required to organize work efficiently and complete it on time.", opts:["Painting","Cooking","Time Management","Dancing"], ans:2,
+    qGu:"_______ એ વર્તણૂકીય કુશળતામાંની એક છે જે કાર્યને કાર્યક્ષમ રીતે ગોઠવવા અને સમયસર પૂર્ણ કરવા માટે જરૂરી છે.", optsGu:["ચિત્રકામ","રસોઈ","સમય વ્યવસ્થાપન","નૃત્ય"] },
+  { q:"Choosing between two or more options is known as_______________ process.", opts:["Manufacturing","Decision-making","Scientific","Technical"], ans:1,
+    qGu:"બે અથવા વધુ વિકલ્પો વચ્ચે પસંદગી પ્રક્રિયા ________તરીકે ઓળખાય છે.", optsGu:["ઉત્પાદન","નિર્ણય લેવાની","વૈજ્ઞાનિક","તકનિકી"] },
+  { q:"The block of work time is called a _____________ technique.", opts:["Doro","Pomo","Pomodoro","Domo"], ans:2,
+    qGu:"કામના સમયના બ્લોકને એક__________ તકનીક કહેવામાં આવે છે.", optsGu:["ડોરો","પોમો","પોમોડોરો","ડોમો"] },
+  { q:"Finding a solution to any problem is known as______________skill.", opts:["Over thinking","Critical thinking","Decision-making","Problem solving"], ans:3,
+    qGu:"કોઈપણ સમસ્યાનું સમાધાન શોધવું એ _______કુશળતા તરીકે ઓળખાય છે", optsGu:["વધુ પડતું વિચારવું","જટિલ વિચાર","નિર્ણય લેવો","સમસ્યા ઉકેલવાની"] },
+
+  { q:"We can share our thoughts, ideas and feelings through __________.", opts:["Communication","Reading","Watching","Hearing"], ans:0,
+    qGu:"આપણે આપણા વિચારો, વિચારો અને લાગણીઓ ______દ્વારા શેર કરી શકીએ છીએ.", optsGu:["વાતચીત","પ્રયોગ","તપાસ","સુનાવણી"] },
+  { q:"Which among these is not a type of communication?", opts:["Verbal","Non-Verbal","Visual","Sorrow"], ans:3,
+    qGu:"આમાંથી કયો સંદેશાવ્યવહાર નો પ્રકારનથી?", optsGu:["મૌખિક","બિન-મૌખિક","દૃષ્ટિ","દુ:ખ"] },
+  { q:"The way we sit, our facial expression and body language show__________ communication.", opts:["Non-verbal","Physical fitness","Strength","None"], ans:0,
+    qGu:"આપણે જે રીતે બેસીએ છીએ, આપણા ચહેરાના અભિવ્યક્તિ અને બોડી લેંગ્વેજ ________ સંદેશાવ્યવહાર બતાવે છે.", optsGu:["બિન-મૌખિક","શારીરિક યોગ્યતા","શક્તિ","કોઈ"] },
+  { q:"Forms of verbal communication___________________.", opts:["Written","Speaking","Both A&B","Learning"], ans:2,
+    qGu:"મૌખિક સંદેશાવ્યવહારના સ્વરૂપો_________ છે.", optsGu:["લેખિત","બોલતા","બંને એ અને બી","શિક્ષણ"] },
+  { q:"A formal letter can be used for purposes.", opts:["Boring","Official","Friendship","Fighting"], ans:1,
+    qGu:"હેતુઓ માટે ઔપચારિક પત્રનો______ માટે ઉપયોગ કરી શકાય છે.", optsGu:["કંટાળાજનક","અધિકારીક","મિત્રતા","લડાઈ"] },
+  { q:"Argument or disagreement between two groups of people is called", opts:["Teamwork","Conflict","Happiness","None"], ans:1,
+    qGu:"લોકોના બે જૂથો વચ્ચેની દલીલ અથવા મતભેદ_________ કહેવાય છે", optsGu:["ટીમવર્ક","સંઘર્ષ","સુખ","કોઈ નહિ"] },
+  { q:"During Criticism we must remain and to the person", opts:["Happy and Joyful","Calm and listen","Shout and cry","Fight and cry"], ans:1,
+    qGu:"ટીકા દરમિયાન આપણે વ્યક્તિ સાથે અને રહેવું જોઈએ", optsGu:["ખુશ અને આનંદકારક","શાંત અને સાંભળો","બૂમ પાડો અને રૂદન","લડવું અને રડવું"] },
+
+  { q:"English is a ______________ language.", opts:["Common","Day","Night","Evening"], ans:0,
+    qGu:"અંગ્રેજી એક ____________ભાષા છે.", optsGu:["સામાન્ય","દિવસ","રાત","સાંજ"] },
+  { q:"Naming words are also called____________.", opts:["Nouns","Verbs","Action","Pronouns"], ans:0,
+    qGu:"નામકરણ શબ્દો_______________ પણ કહેવામાં આવે છે.", optsGu:["સંજ્ઞાઓ","ક્રિયાપદો","ક્રિયા","સર્વનામો"] },
+  { q:"Action words are also called ____________-.", opts:["Center","Are","Verbs","Is"], ans:2,
+    qGu:"ક્રિયા શબ્દોને____________- પણ કહેવામાં આવે છે.", optsGu:["કેન્દ્ર","Are","ક્રિયાપદો","Is"] },
+  { q:"Adjectives are ___________words.", opts:["Sound","Finish","Describing","Neutral"], ans:2,
+    qGu:"વિશેષણો_________ શબ્દો છે.", optsGu:["અવાજ","અંત","વર્ણ","તુરંત"] },
+  { q:"A declarative sentence tells us some information or explanation. It ends with", opts:["Comma (,)","Question mark (?)","Full stop (.)","Exclamatory mark (!)"], ans:2,
+    qGu:"ઘોષણાત્મક વાક્ય અમને કેટલીક માહિતી અથવા સમજૂતી કહે છે. તે સમાપ્ત થાય છે", optsGu:["અલ્પવિરામ","પ્રશ્ન ચિન્હ (?)","પૂર્ણ વિરામ (.)","ઉદ્ગારવાચક ચિન્હ (!)"] },
+  { q:"Question always end with a _________.", opts:["Comma ,","Question mark ?","Exclamation mark !","Full stop ."], ans:1,
+    qGu:"પ્રશ્ન હંમેશાં એક સાથે સમાપ્ત થાય છે.", optsGu:["અલ્પવિરામ,","પ્રશ્ન ચિન્હ ?","ઉદગાર ચિન્હ !","પૂર્ણ વિરામ ."] },
+
+  { q:"If one can use a computer and the internet comfortably. It is called ________________ Literacy", opts:["Sports Literacy","Digital Literacy","Cultural Literacy","Language Literacy"], ans:1,
+    qGu:"જો કોઈ કમ્પ્યુટર અને ઇન્ટરનેટનો આરામથી ઉપયોગ કરી શકે છે. તેને _________ સાક્ષરતા કહેવામાં આવે છે", optsGu:["રમતગમત સાક્ષરતા","ડિજિટલ સાક્ષરતા","સાંસ્કૃતિક સાક્ષરતા","ભાષા સાક્ષરતા"] },
+  { q:"What does CPU stand for?", opts:["Cost per unit","Central power unit","Central Processing Unit","Cutting power unit"], ans:2,
+    qGu:"સીપીયુ શું છે?", optsGu:["Cost per unit","Central power unit","Central Processing Unit","Cutting power unit"] },
+  { q:"What is the shortcut key to save a file?", opts:["Ctrl+S","Ctrl+X","Ctrl+V","Ctrl+P"], ans:0,
+    qGu:"ફાઇલને સેવ કરવા માટે શોર્ટકટ કી શું છે?", optsGu:["Ctrl+S","Ctrl+X","Ctrl+V","Ctrl+P"] },
+  { q:"What is the shortcut key to copy a file?", opts:["Ctrl+C","Ctrl+X","Ctrl+S","Ctrl+P"], ans:0,
+    qGu:"ફાઇલની નકલ કરવા માટે શોર્ટકટ કી શું છે?", optsGu:["Ctrl+C","Ctrl+X","Ctrl+S","Ctrl+P"] },
+  { q:"__________- is called the library of internet", opts:["Software","Search Engine","Hardware","Mouse"], ans:1,
+    qGu:"ઇન્ટરનેટની લાઇબ્રેરી કહેવામાં આવે છે", optsGu:["સોફ્ટવેર","સર્ચ એન્જિન","હાર્ડવેર","માઉસ"] },
+  { q:"Which of the following is universal ID card", opts:["Bank Credit card","PAN Card","Adhar Card","Employers ID card"], ans:2,
+    qGu:"નીચેનામાંથી યુનિવર્સલ આઈડી કાર્ડ છે", optsGu:["બેંક ક્રેડિટ કાર્ડ","પાન કાર્ડ","આધાર કાર્ડ","એમ્પ્લોયરઆઈ.ડી. કાર્ડ"] },
+  { q:"Laws for activities on the internet is called ___________", opts:["labour laws","cyber laws","environment protection laws","Criminal laws"], ans:1,
+    qGu:"ઇન્ટરનેટ પરની પ્રવૃત્તિઓ માટેના કાયદા _________ કહેવામાં આવે છે", optsGu:["મજૂર કાયદા","સાયબર લો","પર્યાવરણ સંરક્ષણ કાયદા","ફોજદારી કાયદા"] },
+
+  { q:"Discrimination can make a person feel", opts:["weak","disturbed","divided","all of the above"], ans:3,
+    qGu:"ભેદભાવ વ્યક્તિને__________ અનુભવી શકે છે", optsGu:["નબળું","વ્યગ્ર","વિભાજન","ઉપરોક્ત"] },
+  { q:"Equality means in the same situation, people have the", opts:["Same rights","Same status","Same opportunities","All of these"], ans:3,
+    qGu:"સમાનતાનો અર્થ એ જ પરિસ્થિતિમાં, લોકો પાસે_________છે", optsGu:["સરખો હક","સમાન સ્થિતિ","સમાન તકો","આ બધુજ"] },
+  { q:"A diverse workplace increases", opts:["Productivity","Workload","Stress","Tension"], ans:0,
+    qGu:"વૈવિધ્યસભર કાર્યસ્થળથી ______ વધે છે", optsGu:["ઉત્પાદકતા","કાર્યપાત","ભાર","તનાવ"] },
+  { q:"The practice of including people with respect and empathy is called", opts:["Inclusion","Conflict","Culture","Gender"], ans:0,
+    qGu:"આદર અને સહાનુભૂતિ ધરાવતા લોકોને સામેલ કરવાની પ્રથાને___________ કહેવાય છે", optsGu:["સમાવેશ","સંઘર્ષ","સંસ્કાર","જેન્ડર"] },
+
+  { q:"Financial literacy is understanding the way money is ____", opts:["Saved","Spent","Invested","All of them"], ans:3,
+    qGu:"નાણાકીય સાક્ષરતા એ ______ પૈસાની રીત ની સમજણ છે.", optsGu:["બચાવેલો","ખર્ચ","રોકાણ","તમામ"] },
+  { q:"All financial activity can be done through a", opts:["Bank","School","College","Workplace"], ans:0,
+    qGu:"બધી નાણાકીય પ્રવૃત્તિ એ ________ દ્વારા કરી શકાય છે.", optsGu:["બેંક","શાળા","કોલેજ","કાર્યસ્થળ"] },
+  { q:"Online banking is also called", opts:["Home banking","Office banking","Net banking","Self banking"], ans:2,
+    qGu:"ઓનલાઈન બેંકિંગને પણ કહેવામાં આવે છે.", optsGu:["હોમ બેન્કિંગ","ઓફીસ બેન્કિંગ","નેટ બેન્કિંગ","સેલ્ફ બેન્કિંગ"] },
+
+  { q:"What is Entrepreneurship?", opts:["Starting a new Career","Managing Career","Running your own business","Supporting a Business person"], ans:2,
+    qGu:"ઉદ્યોગસાહસિકતા એટલે શું?", optsGu:["નવી કારકિર્દી શરૂ કરી રહ્યા છીએ","સંચાલક કારકિર્દી","તમારો પોતાનો વ્યવસાય ચલાવી રહ્યા છો","વ્યવસાયિક વ્યક્તિને ટેકો આપવો"] },
+  { q:"What is the most important skill needed for a successful Entreprenuer?", opts:["Earning Money","Serving the Society","Having an Entrepreneurial Mindset","Expanding markets"], ans:2,
+    qGu:"સફળ ઉદ્યમી માટે સૌથી મહત્વપૂર્ણ કૌશલ્ય શું છે?", optsGu:["કમાણીના પૈસા","સમાજની સેવા","ઉદ્યોગસાહસિક માનસિકતા રાખવી","વિસ્તૃત બજારો"] },
+  { q:"A person who hires other people for their business is an", opts:["Self-Employed","Employee","Entrepreneur","Employer"], ans:3,
+    qGu:"જે વ્યક્તિ તેમના વ્યવસાય માટે અન્ય લોકોને નોકરી પર રાખે છે તે________ છે", optsGu:["સ્વ રોજગારી","કર્મચારી","ઉદ્યોગસાહસિક","રોજગારદાતા"] },
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let questions = [];
+let current = 0;
+let score = 0;
+let userAnswers = [];
+let answered = false;
+let mode = 'both'; // 'both' | 'en' | 'gu'
+
+function setMode(m) {
+  mode = m;
+  ['both','en','gu'].forEach(k => {
+    const a = document.getElementById('modeBtn-'+k);
+    const b = document.getElementById('miniBtn-'+k);
+    if (a) a.classList.toggle('active', k === m);
+    if (b) b.classList.toggle('active', k === m);
+  });
+  if (document.getElementById('quiz').style.display === 'block') {
+    renderQuestion(true);
+  }
+}
+
+function startQuiz() {
+  questions = shuffle(ALL_QUESTIONS).slice(0, 50);
+  current = 0; score = 0; userAnswers = [];
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion(keepSelection) {
+  answered = false;
+  const q = questions[current];
+  document.getElementById('qNum').textContent = `Question ${current + 1}`;
+  document.getElementById('qCounter').textContent = `${current + 1} / 50`;
+  document.getElementById('pBar').style.width = `${((current) / 50) * 100}%`;
+
+  const qTextEl = document.getElementById('qText');
+  qTextEl.className = 'q-text' + (mode === 'gu' ? ' gu' : '');
+  if (mode === 'en') {
+    qTextEl.innerHTML = q.q;
+  } else if (mode === 'gu') {
+    qTextEl.innerHTML = q.qGu;
+  } else {
+    qTextEl.innerHTML = `${q.q}<span class="secondary">${q.qGu}</span>`;
+  }
+
+  const letters = ['A', 'B', 'C', 'D'];
+  const optsEl = document.getElementById('opts');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    let inner;
+    if (mode === 'en') {
+      inner = opt;
+    } else if (mode === 'gu') {
+      inner = q.optsGu[i];
+    } else {
+      inner = `${opt}<span class="opt-sub">${q.optsGu[i]}</span>`;
+    }
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${inner}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optsEl.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.disabled = true;
+  nextBtn.textContent = current === 49 ? 'Submit ✓' : 'Next →';
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[current];
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o => o.classList.add('disabled'));
+
+  const fb = document.getElementById('feedback');
+  const correctText = mode === 'gu' ? q.optsGu[q.ans] : q.opts[q.ans];
+
+  if (idx === q.ans) {
+    opts[idx].classList.add('correct');
+    fb.className = 'feedback correct show';
+    fb.textContent = mode === 'gu' ? '✓ સાચું! સરસ.' : '✓ Correct! Well done.';
+    score++;
+    userAnswers.push({ correct: true, chosen: idx });
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    fb.className = 'feedback wrong show';
+    fb.textContent = mode === 'gu' ? `✗ ખોટું. સાચો જવાબ: ${correctText}` : `✗ Wrong. The correct answer is: ${correctText}`;
+    userAnswers.push({ correct: false, chosen: idx });
+  }
+
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= 50) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz').style.display = 'none';
+  const result = document.getElementById('result');
+  result.style.display = 'block';
+
+  const pct = Math.round((score / 50) * 100);
+  const wrong = 50 - score;
+
+  const r = 54, cx = 65, cy = 65;
+  const circ = 2 * Math.PI * r;
+  const color = pct >= 70 ? '#22c55e' : pct >= 40 ? '#f59e0b' : '#ef4444';
+  document.getElementById('rSvg').innerHTML = `
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2a2f45" stroke-width="8"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+      stroke-dasharray="${circ}" stroke-dashoffset="${circ - (pct / 100) * circ}"
+      stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
+  `;
+  document.getElementById('rPct').style.color = color;
+  document.getElementById('rPct').textContent = `${pct}%`;
+
+  const titles = pct >= 80 ? '🏆 Excellent!' : pct >= 60 ? '👍 Good Job!' : pct >= 40 ? '📚 Keep Practicing' : '💪 Try Again!';
+  const msgs = pct >= 80 ? 'Outstanding performance! You have a strong grasp of Employability Skills.' :
+    pct >= 60 ? 'Nice work! Review the topics where you went wrong to improve further.' :
+    pct >= 40 ? 'A decent effort. Study the modules again and retake the quiz.' :
+    'Don\'t give up! Review all the modules and try again.';
+
+  document.getElementById('rTitle').textContent = titles;
+  document.getElementById('rMsg').textContent = msgs;
+  document.getElementById('rCorrect').textContent = score;
+  document.getElementById('rWrong').textContent = wrong;
+
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  questions.forEach((q, i) => {
+    const ua = userAnswers[i];
+    const div = document.createElement('div');
+    div.className = `review-item ${ua.correct ? 'ri-correct' : 'ri-wrong'}`;
+    div.innerHTML = `
+      <div class="ri-q"><span class="ri-tag ${ua.correct ? 'c' : 'w'}">${ua.correct ? '✓ CORRECT' : '✗ WRONG'}</span> &nbsp;Q${i + 1}: ${q.q}
+        <span class="ri-q-gu">${q.qGu}</span>
+      </div>
+      <div class="ri-a">
+        ${ua.correct ? '' : `<span style="color:#fc7373">Your answer: ${q.opts[ua.chosen]} / ${q.optsGu[ua.chosen]}</span><br>`}
+        <span style="color:#22c55e">Correct answer: ${q.opts[q.ans]} / ${q.optsGu[q.ans]}</span>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function toggleReview(btn) {
+  const list = document.getElementById('reviewList');
+  list.classList.toggle('show');
+  btn.textContent = list.classList.contains('show') ? '📋 Hide Answer Review' : '📋 Show Answer Review';
+}
+
+function restart() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('cover').style.display = 'block';
+}
+</script>
+</body>
+</html>
